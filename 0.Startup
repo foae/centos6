@@ -1,0 +1,56 @@
+=== 1 ===
+wget http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm ; wget http://rpms.famillecollet.com/enterprise/remi-release-6.rpm ; rpm -Uvh remi-release-6*.rpm ; rpm -Uvh epel-release-6*.rpm
+
+=== 2 ===
+nano /etc/yum.repos.d/ --- activezi repozitoarele noi epel/remi
+yum update
+
+=== 3 ===
+yum install wget curl nano vim htop openssl-devel gcc gcc-c++ kernel-devel dialog mc autoconf automake libtool chkrootkit lynis screen libpng libjpeg libmcrypt mhash zip unzip openssl flex rssh libxml2 ImageMagick pcre sudo bc jwhois lsof tar rrdtool GeoIP yum-priorities at logwatch logrotate arj lzop
+
+=== 4 ===
+SSH
+
+=== HTTPD ===
+yum install httpd-itk yum install mod_ssl openssl crypto-utils ; chkconfig httpd on
+(daca nu este procesat scriptul php, vezi /etc/mimetypes si adauga application/x-httpd-php	 php phtml php5)
+
+cd /etc/httpd ; mkdir /etc/httpd/ssl ; openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/httpd/ssl/apache.key -out /etc/httpd/ssl/apache.crt ; ls -la
+
+cd /etc/httpd/html ; mkdir sah.ovh fuckyourmind.org zestrea.org robico.in plainsight.ro orgonit.ro funcard.ro
+
+=== APACHE TUNING ===
+APACHE TUNING: http://httpd.apache.org/docs/current/misc/perf-tuning.html
+
+=== PHP ===
+yum install php php-common php-cli php-pecl-apcu php-cli php-pear php-pdo php-mysqlnd php-pgsql php-pecl-mongo php-sqlite php-pecl-memcache php-pecl-memcached php-gd php-mbstring php-mcrypt php-xml php-suhosin php-mysql php-devel php-gd php-pecl-memcache php-pspell php-snmp php-xmlrpc php-xml php-imap
+
+[https://webtatic.com/packages/httpd-itk/]
+[http://itsol.biz/apache-virtual-hosts-with-different-users-centos-6-2-and-apache-2-2/]
+[https://www.brancaleoni.com/blog/?page_id=17]
+/etc/sysconfig/httpd
+HTTPD=/usr/sbin/httpd.itk
+
+=== MOD SPDY ===
+[https://developers.google.com/speed/spdy/mod_spdy/]
+wget https://dl-ssl.google.com/dl/linux/direct/mod-spdy-beta_current_x86_64.rpm ; rpm -U mod-spdy-beta_current_x86_64.rpm ; yum install mod-spdy-beta ; service httpd restart
+
+=== BIND/NAMED ===
+yum install bind bind-utils ; chkconfig named on
+
+=== NTP ===
+yum install ntp ntpdate ; chkconfig ntpd on; service ntpd stop ; ntpdate pool.ntp.org ; service ntpd restart
+
+=== MYSQL ===
+wget http://dev.mysql.com/get/mysql-community-release-el6-5.noarch.rpm ; rpm -Uvh mysql-community-release-el6-5.noarch.rpm ; yum update ; yum install mysql-client mysql-server
+
+Pwd: Generate a truly random password
+
+=== MEMCACHED & PHP ===
+yum install memcached php-pecl-memcache
+/etc/sysconfig/memcached
+PORT="11211"
+USER="memcached"
+MAXCONN="4096"
+CACHESIZE="512"
+OPTIONS="-l 127.0.0.1"
