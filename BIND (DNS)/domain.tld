@@ -1,0 +1,58 @@
+$TTL 3h
+$ORIGIN domain.tld.
+@               IN      SOA     ns1.domain.tld. root.domain.tld. (
+        2014110201   ; serial
+        1h           ; refresh time
+        5m           ; retry
+        1w           ; expiry
+        2d           ; NXDOMAIN
+)
+
+@               IN      NS      ns1.domain.tld.
+@               IN      NS      ns2.domain.tld.
+@               IN      NS      ns3.domain.tld.
+ns1             IN      A       192.168.0.100
+ns2             IN      A       192.168.0.200
+ns3             IN      A       192.168.0.300
+
+@				IN		A		192.168.0.100
+www				IN      A       192.168.0.100
+mail			IN      A       192.168.0.100
+ftp				IN      A       192.168.0.100
+
+; ns2
+@               IN      A       192.168.0.200
+www             IN      A       192.168.0.200
+mail2           IN		A		192.168.0.200
+ftp             IN      A       192.168.0.200
+
+; ns3
+@               IN      A       192.168.0.300
+www             IN      A       192.168.0.300
+mail3           IN      A       192.168.0.300
+ftp             IN      A       192.168.0.300
+
+@               IN		MX	0	mail.domain.tld.
+@               IN		MX	10	mail2.domain.tld.
+@               IN		MX	5	mail3.domain.tld.
+
+; Setup SPF records.
+; Use both domain (@) and host (mail, mail2, etc.) SPF as a safety net.
+@               IN              TXT             "v=spf1 mx -all"
+mail            IN              TXT             "v=spf1 a -all"
+mail2           IN              TXT             "v=spf1 a -all"
+mail3           IN              TXT             "v=spf1 a -all"
+
+; Setup PTR records
+$ORIGIN 0.168.192.IN-ADDR.ARPA.
+100              IN              PTR             mail.domain.tld.
+100              IN              PTR             domain.tld.
+
+$ORIGIN 0.168.192.IN-ADDR.ARPA.
+200             IN              PTR             mail2.domain.tld.
+200             IN              PTR             domain.tld.
+
+$ORIGIN 0.168.192.IN-ADDR.ARPA.
+300              IN              PTR             mail3.domain.tld.
+300              IN              PTR             domain.tld.
+

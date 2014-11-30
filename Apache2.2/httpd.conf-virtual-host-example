@@ -1,0 +1,26 @@
+<VirtualHost *:80>
+
+        DocumentRoot /home/ro-domains/domain.tld/www
+	
+	# Logs: /home/ro-domains/domain.tld/logs/access_log OR error_log
+	# HTTPD config (virtual host file): /home/ro-domains/domain.tld/httpd/httpd.conf
+
+        ServerName domain.tld
+        ServerAlias www.domain.tld
+        ServerAdmin root@domain.tld
+
+        <Directory /www>
+                Options Indexes MultiViews FollowSymLinks
+                AllowOverride NONE
+                Order Allow,Deny
+                Allow FROM ALL
+        </Directory>
+	
+	# IMPORTANT:	
+	AssignUserId ro-domains ro-domains
+
+	# Log management
+	ErrorLog /home/ro-domains/domain.tld/logs/error_log
+	CustomLog /home/ro-domains/domain.tld/logs/access_log common
+
+</VirtualHost>

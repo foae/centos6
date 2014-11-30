@@ -1,0 +1,83 @@
+options {
+	# Distribution specific.
+	## CentOS:
+	#directory "/var/named";
+	## Debian:
+	#directory "/var/cache/bind";
+	#directory "/etc/bind";
+	
+	# Tweaks
+	auth-nxdomain no; # conform to RFC1035
+	version "Loading..."; # no need to show the BIND version
+
+	## IF This is a MASTER, uncomment:
+	// uncomment if for a default value applied to all zones
+	// otherwise, it will be interpreted per zone
+	#allow-transfer {localhost; 92.222.68.65; 92.222.65.217;};
+	// Immediatly notify slaves of changes -
+	// not quite needed since the default config
+	// will always notify slaves enrolled into zones
+	#also-notify {92.222.68.65; 92.222.65.217;};
+	
+	## IF This is a SLAVE, uncomment:
+	#allow-notify {69.28.67.251;};
+	
+	# Can you hear me?
+	listen-on port 53 {any;};
+	listen-on-v6 port 53 {any;};
+	
+	# Statistics. Change the dir `data` to match your Distribution.
+	#statistics-file "/var/named/data/named_stats.txt";
+	#memstatistics-file "/var/named/data/named_mem_stats.txt";
+	
+	# Allow transfer - none by default. Must be allowed on per-zone basis.
+	allow-transfer {none;};
+	
+	# Closed DNS: permits only local IPs to issue recursive queries
+	allow-recursion {localhost; 127.0.0.1;};
+	
+	# Allow queries from outside
+	allow-query {any;};
+};
+### LOGGING ###
+logging {
+	channel default {
+		file "/var/log/named/default.log" versions 3 size 2m; # don't forget to create & chown dir/file
+		severity info; # change this to INFO/NOTICE after debugging
+		print-severity yes;
+		print-time yes;
+		print-category yes;
+	};
+	
+	channel update {
+		file "/var/log/named/update.log" versions 3 size 2m; # don't forget to create & chown dir/file
+		severity info; # change this to INFO/NOTICE after debugging
+		print-severity yes;
+		print-time yes;
+		print-category yes;
+	};
+	
+	channel security {
+		file "/var/log/named/security.log" versions 3 size 2m; # don't forget to create & chown dir/file
+		severity info; # change this to INFO/NOTICE after debugging
+		print-severity yes;
+		print-time yes;
+		print-category yes;
+	};
+	
+	category default {default;};
+	category update {update;};
+	category security {security;};
+	category lame-servers {null;};
+
+};
+### END LOGGING ###
+
+### START ZONE FILES ###
+zone "domain.tld" IN{
+  type master;
+  file "domain.tld";
+  // enable slaves only
+  allow-transfer {92.222.65.217; 92.222.68.65;};
+};
+
